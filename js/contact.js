@@ -118,6 +118,9 @@ const ContactManager = {
     
     // Get form data
     const formData = new FormData(form);
+    const email = formData.get('email');
+    const subject = formData.get('subject') || 'Portfolio Contact Message';
+    const message = formData.get('message');
     
     // Disable submit button
     submitBtn.disabled = true;
@@ -127,23 +130,32 @@ const ContactManager = {
     statusDiv.className = 'form-status';
     
     try {
-      // Using FormSubmit.co API - No API key needed, just the email in the URL
-      const response = await fetch(form.action, {
+      // Using Web3Forms API - Free with no limits
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData,
         headers: {
+          'Content-Type': 'application/json',
           'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          access_key: 'a3f0c350-6c7d-4a8e-9c3d-8f7b3c2a4d6e',
+          email: email,
+          subject: subject,
+          message: message,
+          from_name: 'Portfolio Contact Form'
+        })
       });
       
-      if (response.ok) {
+      const result = await response.json();
+      
+      if (result.success) {
         // Success
         statusDiv.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
         statusDiv.className = 'form-status success';
         form.reset();
       } else {
         // Error from API
-        throw new Error('Failed to send message');
+        throw new Error(result.message || 'Failed to send message');
       }
     } catch (error) {
       // Error
