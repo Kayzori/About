@@ -38,7 +38,7 @@
             <p class="hero-subtitle">Game Developer & Software Engineer</p>
             <p class="hero-description">Specializing in Low-Level System Developement & Game Developement | With 4 Years of Coding and Project Experience</p>
             <div class="hero-buttons">
-              <a href="#contact" class="pixel-button primary">Get In Touch</a>
+              <a href="#contact" class="pixel-button primary">Reach Out</a>
               <a href="#resume" class="pixel-button secondary">View Resume</a>
             </div>
           </div>
@@ -404,6 +404,38 @@
       <div class="container">
         <h2>Contact Me</h2>
         <p class="contact-intro">I'm always open to new opportunities, collaborations, and connections. Feel free to reach out!</p>
+        
+        <!-- Contact Form -->
+        <div class="contact-form-container">
+          <form id="contact-form" class="contact-form">
+            <div class="form-group">
+              <label for="name">Name *</label>
+              <input type="text" id="name" name="name" required placeholder="Your name">
+            </div>
+            
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <input type="text" id="subject" name="subject" required placeholder="What's this about?">
+            </div>
+            
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" rows="6" required placeholder="Your message here..."></textarea>
+            </div>
+            
+            <div class="form-status" id="form-status"></div>
+            
+            <button type="submit" class="pixel-button primary" id="submit-btn">
+              <span class="btn-text">Send Message</span>
+              <span class="btn-loading" style="display: none;">Sending...</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="contact-divider">
+          <span>OR</span>
+        </div>
+
         <div class="contact-email-wrapper">
           <p class="contact-email">📧 Email: <a href="mailto:kayzori7@gmail.com">kayzori7@gmail.com</a></p>
           <button id="copy-email-btn" class="pixel-button small copy-btn" title="Copy email address">

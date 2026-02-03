@@ -1,6 +1,6 @@
 /**
  * Contact Module
- * Handles email copy functionality
+ * Handles email copy functionality and contact form submission
  */
 
 const ContactManager = {
@@ -9,6 +9,7 @@ const ContactManager = {
    */
   init() {
     this.setupEmailCopy();
+    this.setupContactForm();
   },
 
   /**
@@ -91,6 +92,86 @@ const ContactManager = {
     setTimeout(() => {
       button.innerHTML = originalText;
     }, 2000);
+  },
+
+  /**
+   * Setup contact form submission
+   */
+  setupContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+  },
+
+  /**
+   * Handle form submission
+   */
+  async handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+    const statusDiv = document.getElementById('form-status');
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      subject: formData.get('subject'),
+      message: formData.get('message')
+    };
+    
+    // Disable submit button
+    submitBtn.disabled = true;
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline';
+    statusDiv.style.display = 'none';
+    statusDiv.className = 'form-status';
+    
+    try {
+      // Using Web3Forms API - You need to get your access key from https://web3forms.com
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: 'YOUR_WEB3FORMS_ACCESS_KEY', // Replace with your actual key
+          name: data.name,
+          email: 'kayzoriaboutwebsite@gmail.com',
+          subject: data.subject,
+          message: data.message,
+          from_name: 'Portfolio Contact Form',
+          to_email: 'kayzori7@gmail.com'
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Success
+        statusDiv.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
+        statusDiv.className = 'form-status success';
+        form.reset();
+      } else {
+        // Error from API
+        throw new Error(result.message || 'Failed to send message');
+      }
+    } catch (error) {
+      // Error
+      console.error('Form submission error:', error);
+      statusDiv.textContent = '✗ Failed to send message. Please try emailing me directly.';
+      statusDiv.className = 'form-status error';
+    } finally {
+      // Re-enable submit button
+      submitBtn.disabled = false;
+      btnText.style.display = 'inline';
+      btnLoading.style.display = 'none';
+    }
   }
 };
 
