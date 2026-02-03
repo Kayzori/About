@@ -131,12 +131,11 @@ const ContactManager = {
     
     // Get form data
     const formData = new FormData(form);
-    const name = formData.get('name') || 'Anonymous';
     const email = formData.get('email');
     const subject = formData.get('subject') || 'Portfolio Contact Message';
     const message = formData.get('message');
     
-    console.log('Form data:', { name, email, subject, message });
+    console.log('Form data:', { email, subject, message });
     
     // Validate
     if (!email || !message) {
@@ -165,7 +164,6 @@ const ContactManager = {
         },
         body: JSON.stringify({
           access_key: '0455dba6-4960-4716-a463-b2adf44a4992',
-          name: name,
           email: email,
           subject: subject,
           message: message,
