@@ -110,52 +110,44 @@ const ContactManager = {
   async handleFormSubmit(event) {
     event.preventDefault();
     
-    console.log('Form submission started');
-    
     const form = event.target;
     const submitBtn = document.getElementById('submit-btn');
-    
-    if (!submitBtn) {
-      console.error('Submit button not found');
-      return;
-    }
-    
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoading = submitBtn.querySelector('.btn-loading');
+    const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+    const btnLoading = submitBtn ? submitBtn.querySelector('.btn-loading') : null;
     const statusDiv = document.getElementById('form-status');
-    
-    if (!statusDiv) {
-      console.error('Status div not found');
-      return;
-    }
     
     // Get form data
     const formData = new FormData(form);
+    const name = formData.get('name') || 'Anonymous';
     const email = formData.get('email');
     const subject = formData.get('subject') || 'Portfolio Contact Message';
     const message = formData.get('message');
     
-    console.log('Form data:', { email, subject, message });
+    console.log('Form data:', { name, email, subject, message });
     
     // Validate
     if (!email || !message) {
-      statusDiv.textContent = 'Please fill in required fields (Email and Message)';
-      statusDiv.className = 'form-status error';
-      statusDiv.style.display = 'block';
+      if (statusDiv) {
+        statusDiv.textContent = 'Please fill in required fields (Email and Message)';
+        statusDiv.className = 'form-status error';
+        statusDiv.style.display = 'block';
+      }
       return;
     }
     
     // Disable submit button
-    submitBtn.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
     if (btnText) btnText.style.display = 'none';
     if (btnLoading) btnLoading.style.display = 'inline';
-    statusDiv.style.display = 'none';
-    statusDiv.className = 'form-status';
+    if (statusDiv) {
+      statusDiv.style.display = 'none';
+      statusDiv.className = 'form-status';
+    }
     
     try {
       console.log('Sending request to Web3Forms...');
       
-      // Using Web3Forms API - Free with no limits
+      // Using Web3Forms API
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -163,7 +155,8 @@ const ContactManager = {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: 'a3f0c350-6c7d-4a8e-9c3d-8f7b3c2a4d6e',
+          access_key: '0455dba6-4960-4716-a463-b2adf44a4992',
+          name: name,
           email: email,
           subject: subject,
           message: message,
@@ -178,9 +171,11 @@ const ContactManager = {
       
       if (result.success) {
         // Success
-        statusDiv.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
-        statusDiv.className = 'form-status success';
-        statusDiv.style.display = 'block';
+        if (statusDiv) {
+          statusDiv.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
+          statusDiv.className = 'form-status success';
+          statusDiv.style.display = 'block';
+        }
         form.reset();
       } else {
         // Error from API
@@ -189,12 +184,14 @@ const ContactManager = {
     } catch (error) {
       // Error
       console.error('Form submission error:', error);
-      statusDiv.textContent = '✗ Error: ' + error.message + ' - Please email kayzori7@gmail.com directly';
-      statusDiv.className = 'form-status error';
-      statusDiv.style.display = 'block';
+      if (statusDiv) {
+        statusDiv.textContent = '✗ Error: ' + error.message + ' - Please email kayzori7@gmail.com directly';
+        statusDiv.className = 'form-status error';
+        statusDiv.style.display = 'block';
+      }
     } finally {
       // Re-enable submit button
-      submitBtn.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
       if (btnText) btnText.style.display = 'inline';
       if (btnLoading) btnLoading.style.display = 'none';
     }
